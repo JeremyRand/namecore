@@ -117,6 +117,7 @@ BITCOIN_CORE_H = \
   rpcprotocol.h \
   rpcserver.h \
   script/interpreter.h \
+  script/names.h \
   script/script.h \
   script/sigcache.h \
   script/sign.h \
@@ -254,6 +255,7 @@ libbitcoin_common_a_SOURCES = \
   protocol.cpp \
   pubkey.cpp \
   script/interpreter.cpp \
+  script/names.cpp \
   script/script.cpp \
   script/sign.cpp \
   script/standard.cpp \
