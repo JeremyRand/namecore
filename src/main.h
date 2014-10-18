@@ -16,6 +16,7 @@
 #include "coins.h"
 #include "primitives/block.h"
 #include "primitives/transaction.h"
+#include "names.h"
 #include "net.h"
 #include "pow.h"
 #include "script/script.h"
@@ -312,12 +313,14 @@ class CBlockUndo
 {
 public:
     std::vector<CTxUndo> vtxundo; // for all but the coinbase
+    std::vector<CNameTxUndo> vnameundo; // stack of operations (as necessary)
 
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         READWRITE(vtxundo);
+        READWRITE(vnameundo);
     }
 
     bool WriteToDisk(CDiskBlockPos &pos, const uint256 &hashBlock);
