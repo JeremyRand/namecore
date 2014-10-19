@@ -312,6 +312,14 @@ Value getaddressesbyaccount(const Array& params, bool fHelp)
 
 void SendMoney(const CTxDestination &address, CAmount nValue, CWalletTx& wtxNew)
 {
+    // Parse Bitcoin address
+    CScript scriptPubKey = GetScriptForDestination(address);
+
+    return SendMoneyToScript(scriptPubKey, nValue, wtxNew);
+}
+
+void SendMoneyToScript(const CScript &scriptPubKey, CAmount nValue, CWalletTx& wtxNew)
+{
     // Check amount
     if (nValue <= 0)
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid amount");
@@ -326,9 +334,6 @@ void SendMoney(const CTxDestination &address, CAmount nValue, CWalletTx& wtxNew)
         LogPrintf("SendMoney() : %s", strError);
         throw JSONRPCError(RPC_WALLET_ERROR, strError);
     }
-
-    // Parse Bitcoin address
-    CScript scriptPubKey = GetScriptForDestination(address);
 
     // Create and send the transaction
     CReserveKey reservekey(pwalletMain);
