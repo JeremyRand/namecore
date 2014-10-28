@@ -955,6 +955,9 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState &state, const CTransa
             return false;
         }
     }
+
+    if (!pool.checkNameOps(tx))
+        return false;
     }
 
     {
