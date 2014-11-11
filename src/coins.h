@@ -323,6 +323,9 @@ public:
     // Get a name (if it exists)
     virtual bool GetName(const valtype& name, CNameData& data) const;
 
+    // Get a name's history (if it exists)
+    virtual bool GetNameHistory(const valtype& name, CNameHistory& data) const;
+
     // Query for names that were updated at the given height
     virtual bool GetNamesForHeight(unsigned nHeight, std::set<valtype>& names) const;
 
@@ -356,6 +359,7 @@ public:
     bool HaveCoins(const uint256 &txid) const;
     uint256 GetBestBlock() const;
     bool GetName(const valtype& name, CNameData& data) const;
+    bool GetNameHistory(const valtype& name, CNameHistory& data) const;
     bool GetNamesForHeight(unsigned nHeight, std::set<valtype>& names) const;
     void WalkNames(const valtype& start, CNameWalker& walker) const;
     void SetBackend(CCoinsView &viewIn);
@@ -413,12 +417,13 @@ public:
     uint256 GetBestBlock() const;
     void SetBestBlock(const uint256 &hashBlock);
     bool GetName(const valtype &name, CNameData &data) const;
+    bool GetNameHistory(const valtype &name, CNameHistory &data) const;
     bool GetNamesForHeight(unsigned nHeight, std::set<valtype>& names) const;
     void WalkNames(const valtype& start, CNameWalker& walker) const;
     bool BatchWrite(CCoinsMap &mapCoins, const uint256 &hashBlock, const CNameCache &names);
 
     /* Changes to the name database.  */
-    void SetName(const valtype &name, const CNameData &data);
+    void SetName(const valtype &name, const CNameData &data, bool undo);
     void DeleteName(const valtype &name);
 
     /**
