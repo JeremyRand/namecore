@@ -186,6 +186,16 @@ public:
     {
         return 19200;
     }
+
+    bool StrictChainId() const
+    {
+        return true;
+    }
+
+    bool AllowLegacyBlocks(unsigned nHeight) const
+    {
+        return static_cast<int> (nHeight) < AuxpowStartHeight();
+    }
 };
 static CMainParams mainParams;
 
@@ -248,6 +258,16 @@ public:
     {
         return 0;
     }
+
+    bool StrictChainId() const
+    {
+        return false;
+    }
+
+    bool AllowLegacyBlocks(unsigned) const
+    {
+        return true;
+    }
 };
 static CTestNetParams testNetParams;
 
@@ -293,6 +313,16 @@ public:
     {
         return dataRegtest;
     }
+
+    bool StrictChainId() const
+    {
+        return true;
+    }
+
+    bool AllowLegacyBlocks(unsigned) const
+    {
+        return false;
+    }
 };
 static CRegTestParams regTestParams;
 
@@ -319,6 +349,16 @@ public:
     {
         // UnitTest share the same checkpoints as MAIN
         return data;
+    }
+
+    /* StrictChainId() = true inherited from CMainParams.  */
+
+    bool AllowLegacyBlocks(unsigned) const
+    {
+        /* Allow legacy blocks.  This is to make the unit tests that
+           rely on loading predefined block data work.  (In particular,
+           miner_tests.cpp.)  */
+        return true;
     }
 
     //! Published setters to allow changing values in unit test cases
