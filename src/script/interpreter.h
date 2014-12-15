@@ -67,7 +67,11 @@ enum
     // discouraged NOPs fails the script. This verification flag will never be
     // a mandatory flag applied to scripts in a block. NOPs that are not
     // executed, e.g.  within an unexecuted IF ENDIF block, are *not* rejected.
-    SCRIPT_VERIFY_DISCOURAGE_UPGRADABLE_NOPS  = (1U << 7)
+    SCRIPT_VERIFY_DISCOURAGE_UPGRADABLE_NOPS  = (1U << 7),
+
+    // Perform name checks in "mempool" mode.  This allows / disallows
+    // certain stuff (e. g., it allows immature spending of name_new's).
+    SCRIPT_VERIFY_NAMES_MEMPOOL = (1U << 24),
 
 };
 

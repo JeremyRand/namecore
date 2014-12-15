@@ -381,7 +381,7 @@ public:
 CTxMemPool::CTxMemPool(const CFeeRate& _minRelayFee) :
     nTransactionsUpdated(0),
     minRelayFee(_minRelayFee),
-    names(*this)
+    names(*this), fCheckInputs(true)
 {
     // Sanity checks off by default for performance, because otherwise
     // accepting transactions becomes O(N^2) where N is the number
@@ -602,7 +602,7 @@ void CTxMemPool::check(const CCoinsViewCache *pcoins) const
             waitingOnDependants.push_back(&it->second);
         else {
             CValidationState state; CTxUndo undo;
-            assert(CheckInputs(tx, state, mempoolDuplicate, false, 0, false, NULL));
+            assert(!fCheckInputs || CheckInputs(tx, state, mempoolDuplicate, false, SCRIPT_VERIFY_NAMES_MEMPOOL, false, NULL));
             UpdateCoins(tx, state, mempoolDuplicate, undo, 1000000);
         }
     }
@@ -616,7 +616,7 @@ void CTxMemPool::check(const CCoinsViewCache *pcoins) const
             stepsSinceLastRemove++;
             assert(stepsSinceLastRemove < waitingOnDependants.size());
         } else {
-            assert(CheckInputs(entry->GetTx(), state, mempoolDuplicate, false, 0, false, NULL));
+            assert(!fCheckInputs || CheckInputs(entry->GetTx(), state, mempoolDuplicate, false, SCRIPT_VERIFY_NAMES_MEMPOOL, false, NULL));
             CTxUndo undo;
             UpdateCoins(entry->GetTx(), state, mempoolDuplicate, undo, 1000000);
             stepsSinceLastRemove = 0;
