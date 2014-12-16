@@ -64,11 +64,7 @@ if BUILD_BITCOIND
 endif
 
 if BUILD_BITCOIN_UTILS
-  # FIXME: Reenable
-  # Disable namecoin-tx.  For this to work, we need to better
-  # separate files between the various LIBBITCOIN_* libraries
-  # to not produce linker errors.
-  bin_PROGRAMS += namecoin-cli # namecoin-tx
+  bin_PROGRAMS += namecoin-cli namecoin-tx
 endif
 
 .PHONY: FORCE
@@ -110,7 +106,8 @@ BITCOIN_CORE_H = \
   merkleblock.h \
   miner.h \
   mruset.h \
-  names.h \
+  names/common.h \
+  names/main.h \
   netbase.h \
   net.h \
   noui.h \
@@ -175,9 +172,11 @@ libbitcoin_server_a_SOURCES = \
   chain.cpp \
   checkpoints.cpp \
   init.cpp \
+  leveldbwrapper.cpp \
   main.cpp \
   merkleblock.cpp \
   miner.cpp \
+  names/main.cpp \
   net.cpp \
   noui.cpp \
   pow.cpp \
@@ -256,8 +255,7 @@ libbitcoin_common_a_SOURCES = \
   hash.cpp \
   key.cpp \
   keystore.cpp \
-  leveldbwrapper.cpp \
-  names.cpp \
+  names/common.cpp \
   netbase.cpp \
   protocol.cpp \
   pubkey.cpp \
@@ -350,8 +348,6 @@ namecoin_tx_LDADD = \
   $(LIBBITCOIN_CRYPTO) \
   $(LIBSECP256K1) \
   $(BOOST_LIBS) \
-  $(LIBLEVELDB) \
-  $(LIBMEMENV) \
   $(CRYPTO_LIBS)
 
 namecoin_tx_SOURCES = bitcoin-tx.cpp

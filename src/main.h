@@ -16,7 +16,7 @@
 #include "coins.h"
 #include "primitives/block.h"
 #include "primitives/transaction.h"
-#include "names.h"
+#include "names/main.h"
 #include "net.h"
 #include "pow.h"
 #include "script/script.h"
@@ -128,7 +128,6 @@ extern bool fImporting;
 extern bool fReindex;
 extern int nScriptCheckThreads;
 extern bool fTxIndex;
-extern bool fNameHistory;
 extern bool fIsBareMultisigStd;
 extern unsigned int nCoinCacheSize;
 extern CFeeRate minRelayTxFee;

@@ -13,7 +13,6 @@
 #include "checkqueue.h"
 #include "init.h"
 #include "merkleblock.h"
-#include "names.h"
 #include "net.h"
 #include "pow.h"
 #include "txdb.h"
@@ -52,7 +51,6 @@ int nScriptCheckThreads = 0;
 bool fImporting = false;
 bool fReindex = false;
 bool fTxIndex = false;
-bool fNameHistory = false;
 bool fIsBareMultisigStd = true;
 unsigned int nCoinCacheSize = 5000;
 
