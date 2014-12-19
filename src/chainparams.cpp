@@ -265,6 +265,14 @@ public:
         return 36000;
     }
 
+    CAmount MinNameCoinAmount(unsigned nHeight) const
+    {
+        if (nHeight < 212500)
+            return 0;
+
+        return COIN / 100;
+    }
+
     bool LenientVersionCheck(unsigned nHeight) const
     {
         return (nHeight < 212500);
@@ -360,6 +368,11 @@ public:
     bool AllowLegacyBlocks(unsigned) const
     {
         return true;
+    }
+
+    CAmount MinNameCoinAmount(unsigned) const
+    {
+        return COIN / 100;
     }
 
     bool LenientVersionCheck(unsigned) const
