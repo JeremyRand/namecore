@@ -454,7 +454,7 @@ CheckNameTransaction (const CTransaction& tx, unsigned nHeight,
 
   if (name.size () > MAX_NAME_LENGTH)
     return state.Invalid (error ("CheckNameTransaction: name too long"));
-  if (nameOpOut.getOpValue ().size () > MAX_VALUE_LENGTH)
+  if (nameOpOut.getOpValue1 ().size () > MAX_VALUE_LENGTH)
     return state.Invalid (error ("CheckNameTransaction: value too long"));
 
   /* Process NAME_UPDATE next.  */

@@ -144,7 +144,7 @@ public:
    * @return The name operation's value.
    */
   inline const valtype&
-  getOpValue () const
+  getOpValue1 () const
   {
     switch (op)
       {
@@ -153,6 +153,27 @@ public:
 
       case OP_NAME_UPDATE:
         return args[1];
+
+      default:
+        assert (false);
+      }
+  }
+  
+  /**
+   * Return the name operation value.  This call is only valid for
+   * OP_NAME_FIRSTUPDATE or OP_NAME_UPDATE.
+   * @return The name operation's value.
+   */
+  inline const valtype&
+  getOpValue () const
+  {
+    switch (op)
+      {
+      case OP_NAME_FIRSTUPDATE:
+        return args[3];
+
+      case OP_NAME_UPDATE:
+        return args[2];
 
       default:
         assert (false);

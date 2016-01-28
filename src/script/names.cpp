@@ -60,7 +60,58 @@ CNameScript::CNameScript (const CScript& script)
     }
 
   op = nameOp;
-  address = CScript (pc, script.end ());
+  
+  CScript::const_iterator pcAddress = pc;
+  
+  // Ops that have a value field may receive extensions.
+  // This doesn't affect consensus rules in any way.
+  if(op == OP_NAME_FIRSTUPDATE || op == OP_NAME_UPDATE)
+  {
+    args.push_back(args[args.size()-1]);
+    
+    while(true)
+    {
+      opcodetype nameExtOp, nameExtDropOp;
+      valtype vch;
+      
+      if (!script.GetOp (pc, nameExtOp))
+      {
+	break;
+      }
+      
+      if (! (nameExtOp == op) )
+      {
+	break;
+      }
+      
+      opcodetype pushOp;
+      
+      if (!script.GetOp (pc, pushOp, vch))
+      {
+	break;
+      }
+      
+      if (!(pushOp >= 0 && pushOp <= OP_PUSHDATA4))
+      {
+	break;
+      }
+      
+      if (!script.GetOp (pc, nameExtDropOp))
+      {
+	break;
+      }
+      
+      if (! (nameExtDropOp == OP_2DROP) )
+      {
+	break;
+      }
+      
+      args[args.size()-1].insert(args[args.size()-1].end(), vch.begin(), vch.end());
+      pcAddress = pc;
+    }
+  }
+  
+  address = CScript (pcAddress, script.end ());
 }
 
 CScript
@@ -77,8 +128,32 @@ CNameScript::buildNameFirstupdate (const CScript& addr, const valtype& name,
                                    const valtype& value, const valtype& rand)
 {
   CScript prefix;
-  prefix << OP_NAME_FIRSTUPDATE << name << rand << value
-         << OP_2DROP << OP_2DROP;
+  
+  if(value.size() <= MAX_SCRIPT_ELEMENT_SIZE)
+  {
+    prefix << OP_NAME_FIRSTUPDATE << name << rand << value
+           << OP_2DROP << OP_2DROP;
+  }
+  else
+  {
+    valtype value1(value.begin(), value.begin() + MAX_SCRIPT_ELEMENT_SIZE);
+    
+    prefix << OP_NAME_FIRSTUPDATE << name << rand << value1
+           << OP_2DROP << OP_2DROP;
+    
+    size_t valueStep = MAX_SCRIPT_ELEMENT_SIZE;
+    while(value.size() > valueStep + MAX_SCRIPT_ELEMENT_SIZE)
+    {
+      valtype value2(value.begin() + valueStep, value.begin() + valueStep + MAX_SCRIPT_ELEMENT_SIZE);
+      prefix << OP_NAME_FIRSTUPDATE << value2 << OP_2DROP;
+    }
+    
+    if(value.size() > valueStep)
+    {
+      valtype value2(value.begin() + valueStep, value.end());
+      prefix << OP_NAME_FIRSTUPDATE << value2 << OP_2DROP;
+    }
+  }
 
   return prefix + addr;
 }
@@ -88,7 +163,30 @@ CNameScript::buildNameUpdate (const CScript& addr, const valtype& name,
                               const valtype& value)
 {
   CScript prefix;
-  prefix << OP_NAME_UPDATE << name << value << OP_2DROP << OP_DROP;
+  
+  if(value.size() <= MAX_SCRIPT_ELEMENT_SIZE)
+  {
+    prefix << OP_NAME_UPDATE << name << value << OP_2DROP << OP_DROP;
+  }
+  else
+  {
+    valtype value1(value.begin(), value.begin() + MAX_SCRIPT_ELEMENT_SIZE);
+    
+    prefix << OP_NAME_UPDATE << name << value1 << OP_2DROP << OP_DROP;
+  
+    size_t valueStep = MAX_SCRIPT_ELEMENT_SIZE;
+    while(value.size() > valueStep + MAX_SCRIPT_ELEMENT_SIZE)
+    {
+      valtype value2(value.begin() + valueStep, value.begin() + valueStep + MAX_SCRIPT_ELEMENT_SIZE);
+      prefix << OP_NAME_UPDATE << value2 << OP_2DROP;
+    }
+    
+    if(value.size() > valueStep)
+    {
+      valtype value2(value.begin() + valueStep, value.end());
+      prefix << OP_NAME_UPDATE << value2 << OP_2DROP;
+    }
+  }
 
   return prefix + addr;
 }
